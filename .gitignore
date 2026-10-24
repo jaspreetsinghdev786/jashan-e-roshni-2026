@@ -1,0 +1,6 @@
+# screenshots written by tests/run_tests.py
+tests/shots/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
