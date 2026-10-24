@@ -25,7 +25,10 @@ const DAYS = {
 const TODAY = (() => { const q = new URLSearchParams(location.search).get('today'); const d = q ? new Date(q + 'T00:00:00') : new Date(); return isNaN(d) ? new Date() : d; })();
 const over = date => new Date(date + 'T23:59:59') < TODAY;
 const FEST_OVER = Object.values(DAYS).every(d => over(d.date)); // once the fest is done, nothing is hidden
-const isPast = day => !FEST_OVER && over(DAYS[day].date);
+// A build can stamp the site for one department (build.js): then CS-only days are hidden on the "other" site.
+const SITE_DEPT = document.documentElement.dataset.dept || null;
+const closedTo = day => SITE_DEPT === 'other' && DAYS[day].who !== 'Open to all departments';
+const isPast = day => (!FEST_OVER && over(DAYS[day].date)) || closedTo(day);
 const live = list => list.filter(x => !isPast(x.day));
 document.querySelectorAll('[data-day]').forEach(el => { if (isPast(el.dataset.day)) el.classList.add('past'); });
 
@@ -266,8 +269,9 @@ if (PAGE === 'events') {
   const count = $('#evCount'), items = [...list.querySelectorAll('.ev-item')];
   // Department gate: Computational Sciences students see every event; other departments only the open days.
   const dlg = $('#deptDialog'), chip = $('#deptChip');
-  let dept = null, cat = 'all';
-  try { dept = localStorage.getItem('dept'); } catch (e) {}
+  let dept = SITE_DEPT, cat = 'all';
+  if (!dept) try { dept = localStorage.getItem('dept'); } catch (e) {}
+  if (SITE_DEPT) chip.hidden = true; // a stamped site already knows the department
   const openTo = i => DAYS[i.dataset.day].who === 'Open to all departments';
   const apply = () => {
     items.forEach(i => i.classList.toggle('hide', (cat !== 'all' && !i.dataset.cats.split(' ').includes(cat)) || (dept === 'other' && !openTo(i))));
@@ -276,7 +280,7 @@ if (PAGE === 'events') {
     chip.textContent = dept === 'other' ? 'Another department' : dept === 'cs' ? 'Computational Sciences' : 'Choose department';
   };
   apply();
-  if (dept !== 'cs' && dept !== 'other') dlg.showModal();
+  if (!SITE_DEPT && dept !== 'cs' && dept !== 'other') dlg.showModal();
   dlg.addEventListener('cancel', e => e.preventDefault()); // a choice is required
   dlg.addEventListener('click', e => {
     const b = e.target.closest('[data-dept]'); if (!b) return;
