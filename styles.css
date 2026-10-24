@@ -85,10 +85,11 @@ section>.wrap{position:relative}
   .hn-links a{color:#fff;opacity:.92;transition:color .2s,opacity .2s}
   .hn-links a:hover{opacity:1;color:var(--gold-2)}
   .hn-reg{position:absolute;left:calc(1447*var(--u));top:calc(22*var(--u));width:calc(159*var(--u));height:calc(50*var(--u));display:flex;align-items:center;justify-content:center;
-    border-radius:var(--r-pill);color:var(--on-gold);font-weight:600;font-size:calc(20*var(--u));cursor:pointer;transition:box-shadow .25s}
+    border-radius:var(--r-pill);color:var(--on-gold);font-weight:600;font-size:calc(20*var(--u));cursor:pointer;transition:box-shadow .25s;
+    background:var(--gold) linear-gradient(180deg,var(--gold-2),var(--gold));box-shadow:0 calc(8*var(--u)) calc(24*var(--u)) rgba(242,150,40,.35)}
   .hn-reg:hover{box-shadow:0 0 calc(26*var(--u)) rgba(255,205,110,.65)}
 
-  .band{display:block;list-style:none;inset:0 0 auto 0;height:calc(150*var(--u));pointer-events:none}
+  .band{display:none;list-style:none;inset:0 0 auto 0;height:calc(150*var(--u));pointer-events:none}
   .band li{position:absolute;top:calc(100*var(--u));height:calc(46*var(--u));left:calc(var(--x)*var(--u));transform:translateX(-50%);display:flex;align-items:center;
     font-family:var(--serif);font-weight:700;font-size:calc(17.5*var(--u));letter-spacing:.13em;text-transform:uppercase;color:#4a0b24;white-space:nowrap}
 
@@ -101,7 +102,8 @@ section>.wrap{position:relative}
 
   .dates{display:block;list-style:none;left:0;top:calc(552*var(--u));width:100%;height:calc(106*var(--u));pointer-events:none}
   .dates li{position:absolute;top:0;height:100%;display:flex;align-items:center;gap:calc(18*var(--u));padding-left:calc(30*var(--u));
-    left:calc(98*var(--u));width:calc(220*var(--u));font-size:calc(21*var(--u));line-height:1.2;color:#ffe7c2;pointer-events:auto}
+    left:calc(98*var(--u));width:calc(220*var(--u));font-size:calc(21*var(--u));line-height:1.2;color:#ffe7c2;pointer-events:auto;
+    border:calc(1.5*var(--u)) solid rgba(242,181,58,.8);border-radius:calc(16*var(--u));background:linear-gradient(170deg,rgba(74,20,48,.55),rgba(42,10,29,.7));backdrop-filter:blur(4px)}
   .dates li:nth-child(2){left:calc(342*var(--u));width:calc(216*var(--u))}
   .dates li:nth-child(3){left:calc(582*var(--u));width:calc(209*var(--u))}
   .dates i{font-size:calc(34*var(--u));color:var(--gold-2)}
@@ -109,7 +111,8 @@ section>.wrap{position:relative}
 
   .hero-cta{display:block;margin:0;left:0;top:calc(702*var(--u));width:100%;height:calc(68*var(--u))}
   .hero-cta .btn{position:absolute;top:0;height:100%;min-height:0;padding:0;background:none;border:0;box-shadow:none;font-size:calc(24*var(--u));gap:calc(12*var(--u))}
-  .hero-cta .btn.gold{left:calc(97*var(--u));width:calc(268*var(--u));color:var(--on-gold)}
+  .hero-cta .btn.gold{left:calc(97*var(--u));width:calc(268*var(--u));color:var(--on-gold);border-radius:var(--r-pill);
+    background:var(--gold) linear-gradient(180deg,var(--gold-2),var(--gold));box-shadow:0 calc(10*var(--u)) calc(30*var(--u)) rgba(242,150,40,.35)}
   .hero-cta .btn.ghost{left:calc(383*var(--u));width:calc(256*var(--u));color:#fff}
   .hero-cta .btn:hover,.hero-cta .btn.gold:hover,.hero-cta .btn.ghost:hover{transform:none;background:rgba(255,255,255,.1);box-shadow:0 0 calc(28*var(--u)) rgba(255,205,110,.55)}
 }
@@ -135,8 +138,8 @@ section>.wrap{position:relative}
 .facts li{display:flex;align-items:center;gap:16px}
 .facts i{color:var(--gold);font-size:1.5rem}
 
-/* Desktop strip: band artwork (assets/ui/strip-band.webp, 1672x325) with three date boxes,
-   a divider and three venue rows built in. Content is placed in band units. */
+/* Desktop strip: band artwork (assets/ui/strip-band.webp, 1672x325) with the divider and three venue
+   rows built in. The date boxes are drawn here so only the days shown get one. Content is placed in band units. */
 @media (min-width:1100px){
   .strip{padding:0;border:0;container-type:inline-size;background:url(assets/ui/strip-band.webp) center/100% 100% no-repeat,#2a0818}
   .strip::before,.strip::after,.strip-in::before{display:none}
@@ -144,7 +147,9 @@ section>.wrap{position:relative}
   .sd,.facts{position:absolute;inset:0}
   .sd-label{position:absolute;left:calc(312*var(--s));top:calc(44*var(--s));margin:0;gap:calc(12*var(--s));font-size:calc(14*var(--s))}
   .sd-dates{display:block}
-  .sd-dates li{position:absolute;top:calc(88*var(--s));left:calc(312*var(--s));width:calc(139*var(--s));height:calc(150*var(--s));padding:0;border:0;background:none;border-radius:0;align-content:center}
+  .sd-dates li{position:absolute;top:calc(88*var(--s));left:calc(312*var(--s));width:calc(139*var(--s));height:calc(150*var(--s));padding:0;align-content:center;
+    border:calc(1.5*var(--s)) solid rgba(242,181,58,.8);border-radius:calc(14*var(--s));background:linear-gradient(170deg,rgba(74,20,48,.75),rgba(42,10,29,.9))}
+  .sd-dates li:only-child{left:calc(471*var(--s))}
   .sd-dates li:nth-child(2){left:calc(471*var(--s))}
   .sd-dates li:nth-child(3){left:calc(629*var(--s))}
   .sd-dates b{font-size:calc(52*var(--s))}
@@ -882,3 +887,9 @@ a.tag i{font-size:.9em}
 .dept-opts .btn{justify-content:center;width:100%}
 .dept-chip{border-color:var(--gold);color:var(--gold)}
 .ev-bar .ev-count{margin-left:auto}
+
+/* phones: campus photo sits above the copy, fading to ivory before the heading starts */
+@media (max-width:640px){
+  .open.ivory{background:linear-gradient(180deg,rgba(255,250,242,0) 90px,var(--ivory) 225px),url(assets/campus-m.webp) 70% 0/auto 240px no-repeat,var(--ivory)}
+  .open.ivory .open-copy{padding-top:200px}
+}

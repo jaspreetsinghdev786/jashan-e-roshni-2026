@@ -158,7 +158,7 @@ if (PAGE === 'home') {
   // The scrolling strip names only the events still on: it drops a day's events with that day.
   const words = [...ORDER, ...EXTRA].filter(upcoming).map(n => ({ 'Mehndi Competition': 'Mehndi', 'Digital Reel Making': 'Digital Reel' }[n] || SHORT[n] || n));
   if (!isPast(2)) words.splice(words.indexOf('Dancing') + 1, 0, 'Exhibition');
-  const strip = words.map(w => `${esc(w)} ✦ `).join('');
+  const strip = words.map(w => `${w} ✦ `).join('');
   document.querySelectorAll('.marquee-track span').forEach(sp => { sp.textContent = strip; });
   // With eight tiles or fewer (the other-departments site, or late in the fest) every event shows at once,
   // in centred rows of four, and there is no "And Many More" tile.
