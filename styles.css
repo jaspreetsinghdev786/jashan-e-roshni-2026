@@ -854,3 +854,6 @@ a.tag i{font-size:.9em}
 .results.ivory{background:linear-gradient(180deg,rgba(255,250,242,.93),rgba(255,243,224,.95)),url(assets/ui/results-bg.webp) 50% 30%/cover no-repeat,var(--ivory)}
 .benefits.ivory li,.ivory .benefits li{background:#fff}
 .lite .ivory .rs-cards li{background:#fff}
+
+/* days already over drop off every page (set in app.js from the date) */
+[data-day].past{display:none!important}

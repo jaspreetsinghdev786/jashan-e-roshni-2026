@@ -16,10 +16,18 @@ document.querySelectorAll('.js-form').forEach(a => {
 });
 
 const DAYS = {
-  0: { label: 'Pre-fest, Wednesday 28 October 2026', short: '28 Oct', who: 'Computational Sciences students' },
-  1: { label: 'Day 1, Thursday 5 November 2026', short: '5 Nov', who: 'Open to all departments' },
-  2: { label: 'Day 2, Friday 6 November 2026', short: '6 Nov', who: 'Computational Sciences students' }
+  0: { date: '2026-10-28', label: 'Pre-fest, Wednesday 28 October 2026', short: '28 Oct', who: 'Computational Sciences students' },
+  1: { date: '2026-11-05', label: 'Day 1, Thursday 5 November 2026', short: '5 Nov', who: 'Open to all departments' },
+  2: { date: '2026-11-06', label: 'Day 2, Friday 6 November 2026', short: '6 Nov', who: 'Computational Sciences students' }
 };
+
+// A day drops off every page from the day after it. `?today=YYYY-MM-DD` on any page previews a date.
+const TODAY = (() => { const q = new URLSearchParams(location.search).get('today'); const d = q ? new Date(q + 'T00:00:00') : new Date(); return isNaN(d) ? new Date() : d; })();
+const over = date => new Date(date + 'T23:59:59') < TODAY;
+const FEST_OVER = Object.values(DAYS).every(d => over(d.date)); // once the fest is done, nothing is hidden
+const isPast = day => !FEST_OVER && over(DAYS[day].date);
+const live = list => list.filter(x => !isPast(x.day));
+document.querySelectorAll('[data-day]').forEach(el => { if (isPast(el.dataset.day)) el.classList.add('past'); });
 
 const COMPS = [
   { day: 0, no: 1, name: 'Mehndi Competition', cats: 'cultural art', ico: 'ph-hand-palm', when: '11:00 AM to 01:00 PM',
@@ -120,7 +128,7 @@ function pressChip(group, b) {
 
 /* ---------- home page ---------- */
 if (PAGE === 'home') {
-  $('#schList').innerHTML = SUMMARY.map(s => `
+  $('#schList').innerHTML = live(SUMMARY).map(s => `
   <li class="reveal">
     <span class="sch-day"><b>${s.date}</b><small>${s.mon}</small></span>
     <button type="button" class="sch-card" data-day="${s.day}" aria-haspopup="dialog">
@@ -141,7 +149,8 @@ if (PAGE === 'home') {
   </article>`;
   };
   const cardsEl = $('#cards');
-  cardsEl.innerHTML = ORDER.map(n => tile(n)).join('') + EXTRA.map(n => tile(n, true)).join('') + `
+  const upcoming = n => !isPast(COMPS.find(c => c.name === n).day);
+  cardsEl.innerHTML = ORDER.filter(upcoming).map(n => tile(n)).join('') + EXTRA.filter(upcoming).map(n => tile(n, true)).join('') + `
   <button type="button" class="tile-more reveal" aria-expanded="false" aria-controls="cards">
     <span class="thumb"><i class="ph ph-gift" aria-hidden="true"></i><img src="assets/events/and-many-more.webp" alt="" loading="lazy" decoding="async" onload="this.classList.add('ok')" onerror="this.remove()"></span>
     <h3>And Many More</h3>
@@ -201,9 +210,9 @@ if (PAGE === 'home') {
     }).join('');
   };
   const openSchedule = day => {
-    const list = day === 'all' ? SCHEDULE : SCHEDULE.filter(s => String(s.day) === String(day));
+    const list = live(day === 'all' ? SCHEDULE : SCHEDULE.filter(s => String(s.day) === String(day)));
     openDialog(`<div class="rd-head"><span class="card-ico"><i class="ph ph-calendar-dots" aria-hidden="true"></i></span>
-    <div><h3 id="rd-title">${day === 'all' ? 'Full timetable' : esc(SUMMARY[day].title)}</h3><p class="when">${day === 'all' ? 'All three dates' : DAYS[day].label}</p></div></div>${slotsHtml(list)}`);
+    <div><h3 id="rd-title">${day === 'all' ? 'Full timetable' : esc(SUMMARY[day].title)}</h3><p class="when">${day === 'all' ? 'All dates' : DAYS[day].label}</p></div></div>${slotsHtml(list)}`);
   };
   $('#schList').addEventListener('click', e => { const b = e.target.closest('.sch-card'); if (b) openSchedule(b.dataset.day); });
   $('#fullSched').addEventListener('click', () => openSchedule('all'));
@@ -221,7 +230,7 @@ if (PAGE === 'home') {
 
 /* ---------- schedule page: the full timetable, day by day ---------- */
 if (PAGE === 'schedule') {
-  $('#timetable').innerHTML = SUMMARY.map(s => {
+  $('#timetable').innerHTML = live(SUMMARY).map(s => {
     const d = s.day, slots = SCHEDULE.filter(x => x.day === d);
     return `<section class="tt-day" id="day-${d}" aria-labelledby="tt-h-${d}">
       <header class="tt-head reveal">
@@ -241,7 +250,7 @@ if (PAGE === 'schedule') {
 /* ---------- events page: every competition with its full rules ---------- */
 if (PAGE === 'events') {
   const list = $('#eventList');
-  list.innerHTML = [...ORDER, ...EXTRA].map(n => {
+  list.innerHTML = [...ORDER, ...EXTRA].filter(n => !isPast(COMPS.find(x => x.name === n).day)).map(n => {
     const c = COMPS.find(x => x.name === n), id = slug(n);
     return `<article class="ev-item reveal" id="${id}" data-cats="${c.cats}" data-day="${c.day}" tabindex="-1">
       <div class="ev-pic"><i class="ph ${c.ico}" aria-hidden="true"></i><img src="assets/events/${id}.webp" alt="" loading="lazy" decoding="async" onload="this.classList.add('ok')" onerror="this.remove()">
