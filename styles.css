@@ -212,8 +212,9 @@ section>.wrap{position:relative}
 .sch-meta i{color:var(--gold);margin-right:6px}
 .sch-go{color:var(--gold);font-size:1.3rem}
 
-/* Desktop schedule: artwork (assets/ui/schedule-plate.webp, 1976x796) with the diya, the timeline
-   circles and three card frames built in. Content is placed in plate units. */
+/* Desktop schedule: artwork (assets/ui/schedule-plate.webp, 1976x796) with the diya and mandalas.
+   The timeline, circles and card frames are drawn here so they only appear for the days shown.
+   Content is placed in plate units. */
 @media (min-width:1100px){
   .schedule{padding:0;container-type:inline-size;background:url(assets/ui/schedule-plate.webp) center/100% 100% no-repeat,#2a0a1d}
   .sch-mandala,.sch-lamps,.sch-swoosh,.sch-list::before{display:none}
@@ -224,17 +225,28 @@ section>.wrap{position:relative}
   .sch-copy .btn{min-height:calc(64*var(--k));padding:0 calc(36*var(--k));font-size:calc(20*var(--k));gap:calc(12*var(--k))}
   .sch-list{position:absolute;inset:0;display:block;pointer-events:none}
   .sch-list li{position:absolute;display:block;pointer-events:auto;left:calc(783*var(--k));width:calc(1087*var(--k));top:calc(81*var(--k));height:calc(174*var(--k))}
+  /* timeline: a gold line from the circle down to the next circle, with a dot at each end */
+  .sch-list li::before{content:"";position:absolute;left:calc(57*var(--k));top:calc(-40*var(--k));bottom:calc(-40*var(--k));width:calc(2*var(--k));background:linear-gradient(180deg,var(--gold-2),var(--gold));opacity:.9}
+  .sch-list li:first-child::before{top:calc(-20*var(--k))}
+  .sch-list li:last-child::before{bottom:calc(-20*var(--k))}
+  .sch-list li::after{content:"";position:absolute;left:calc(52*var(--k));top:calc(-24*var(--k));width:calc(12*var(--k));height:calc(12*var(--k));border-radius:50%;background:var(--gold-2);box-shadow:0 0 calc(10*var(--k)) var(--gold-2)}
+  .sch-list li:last-child::after{top:auto;bottom:calc(-24*var(--k))}
   .sch-list li:nth-child(2){top:calc(289*var(--k));height:calc(177*var(--k))}
   .sch-list li:nth-child(3){top:calc(506*var(--k));height:calc(178*var(--k))}
-  .sch-day{position:absolute;left:0;top:calc(21*var(--k));width:calc(116*var(--k));height:calc(116*var(--k));background:none;border:0;box-shadow:none}
+  /* fewer days (a date passed, or the other-departments site): keep the rows centred on the plate */
+  .sch-list li:only-child{top:calc(289*var(--k))}
+  .sch-list li:first-child:nth-last-child(2){top:calc(185*var(--k))}
+  .sch-list li:nth-child(2):last-child{top:calc(402*var(--k))}
+  .sch-day{position:absolute;left:0;top:calc(21*var(--k));width:calc(116*var(--k));height:calc(116*var(--k));border-width:calc(2*var(--k));box-shadow:0 0 calc(26*var(--k)) rgba(255,170,60,.55),inset 0 0 calc(14*var(--k)) rgba(255,170,60,.25)}
   .sch-list li:nth-child(2) .sch-day{top:calc(29*var(--k))}
   .sch-list li:nth-child(3) .sch-day{top:calc(26*var(--k))}
   .sch-day b{font-size:calc(40*var(--k))}
   .sch-day small{font-size:calc(15*var(--k));margin-top:calc(4*var(--k))}
   .sch-card{position:absolute;left:calc(160*var(--k));top:0;width:calc(927*var(--k));height:100%;grid-template-columns:calc(240*var(--k)) 1fr auto;gap:calc(36*var(--k));
-    padding:calc(8*var(--k)) calc(44*var(--k)) calc(8*var(--k)) calc(7*var(--k));border:0;border-radius:calc(24*var(--k));background:none}
-  .sch-card:hover{transform:none;box-shadow:0 0 calc(30*var(--k)) rgba(255,170,60,.35)}
-  .sch-thumb{height:100%;aspect-ratio:auto;border-radius:calc(16*var(--k));background:none}
+    padding:calc(8*var(--k)) calc(44*var(--k)) calc(8*var(--k)) calc(7*var(--k));border:calc(1.5*var(--k)) solid rgba(242,181,58,.75);border-radius:calc(24*var(--k));
+    background:linear-gradient(170deg,rgba(74,20,48,.85),rgba(42,10,29,.92));box-shadow:0 calc(10*var(--k)) calc(30*var(--k)) rgba(0,0,0,.35)}
+  .sch-card:hover{transform:none;border-color:var(--gold-2);box-shadow:0 0 calc(30*var(--k)) rgba(255,170,60,.35)}
+  .sch-thumb{height:100%;aspect-ratio:auto;border-radius:calc(16*var(--k));background:var(--card-2)}
   .sch-txt{gap:calc(12*var(--k))}
   .sch-txt strong{font-size:calc(32*var(--k))}
   .sch-meta{font-size:calc(20*var(--k));gap:calc(8*var(--k)) calc(30*var(--k))}
