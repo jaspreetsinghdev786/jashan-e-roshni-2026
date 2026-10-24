@@ -155,6 +155,11 @@ if (PAGE === 'home') {
   };
   const cardsEl = $('#cards');
   const upcoming = n => !isPast(COMPS.find(c => c.name === n).day);
+  // The scrolling strip names only the events still on: it drops a day's events with that day.
+  const words = [...ORDER, ...EXTRA].filter(upcoming).map(n => ({ 'Mehndi Competition': 'Mehndi', 'Digital Reel Making': 'Digital Reel' }[n] || SHORT[n] || n));
+  if (!isPast(2)) words.splice(words.indexOf('Dancing') + 1, 0, 'Exhibition');
+  const strip = words.map(w => `${esc(w)} ✦ `).join('');
+  document.querySelectorAll('.marquee-track span').forEach(sp => { sp.textContent = strip; });
   cardsEl.innerHTML = ORDER.filter(upcoming).map(n => tile(n)).join('') + EXTRA.filter(upcoming).map(n => tile(n, true)).join('') + `
   <button type="button" class="tile-more reveal" aria-expanded="false" aria-controls="cards">
     <span class="thumb"><i class="ph ph-gift" aria-hidden="true"></i><img src="assets/events/and-many-more.webp" alt="" loading="lazy" decoding="async" onload="this.classList.add('ok')" onerror="this.remove()"></span>

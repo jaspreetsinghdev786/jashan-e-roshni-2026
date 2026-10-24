@@ -115,6 +115,8 @@ def integration(browser):
                 if dept == 'other':
                     check(dept, 'home: other-department wording', 'every department' in pg.evaluate('document.querySelector(".h-sub").textContent + document.querySelector(".schedule .sub").textContent'))
                     check(dept, 'home: no 28 Oct tile', pg.evaluate('![...document.querySelectorAll("#cards .card")].some(c => c.dataset.day === "0")'))
+                strip = pg.evaluate('document.querySelector(".marquee-track span").textContent')
+                check(dept, 'home: marquee names only visible events', ('Mehndi' in strip) == (dept == 'cs') and ('Rangoli' in strip) == (dept == 'cs') and 'Quiz' in strip, strip[:80])
             if name == 'schedule':
                 check(dept, 'schedule: day sections', pg.evaluate('document.querySelectorAll(".tt-day").length') == want['days'])
                 check(dept, 'schedule: date pills', pg.evaluate('document.querySelectorAll(".pg-dates li:not(.past)").length') == want['pills'])
