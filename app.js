@@ -16,67 +16,74 @@ document.querySelectorAll('.js-form').forEach(a => {
 });
 
 const DAYS = {
-  0: { label: 'Pre-fest, Wednesday 28 October 2026', short: '28 Oct', who: 'Open to all departments' },
+  0: { label: 'Pre-fest, Wednesday 28 October 2026', short: '28 Oct', who: 'Computational Sciences students' },
   1: { label: 'Day 1, Thursday 5 November 2026', short: '5 Nov', who: 'Open to all departments' },
   2: { label: 'Day 2, Friday 6 November 2026', short: '6 Nov', who: 'Computational Sciences students' }
 };
 
 const COMPS = [
-  { day: 0, no: 1, name: 'Mehndi Competition', cats: 'cultural art', ico: 'ph-hand-palm', when: 'Wednesday, 28 October 2026',
-    rules: ['Date: 28 October 2026, at the Department of Computational Sciences.', 'Time slot, entry rules and awards will be announced by the organisers.'], awards: 'To be announced' },
+  { day: 0, no: 1, name: 'Mehndi Competition', cats: 'cultural art', ico: 'ph-hand-palm', when: '11:00 AM to 01:00 PM',
+    rules: ['Date: 28 October 2026, 11:00 AM to 1:00 PM, at the Department of Computational Sciences.', 'Only for students of the Department of Computational Sciences.', 'Entry rules and awards will be announced by the organisers.'], awards: 'To be announced' },
 
-  { day: 1, no: 1, name: 'Quiz', cats: 'fun', ico: 'ph-question', when: 'Round 1 Morning, Round 2 Midday',
+  { day: 1, no: 1, name: 'Quiz', cats: 'fun', ico: 'ph-question', when: '09:30 AM to 10:30 AM',
     rules: ['Individual participation only (no teams or pairs).', 'Round 1: time-bound written test on General Knowledge and Festive Trivia.', 'Round 2: top 5 scorers qualify for the oral round (5 questions per candidate).', 'Mobile phones, smartwatches and external reference material are strictly prohibited in both rounds.', "Points awarded for accuracy and speed. The quiz master's decision is final."], awards: '1st, 2nd' },
-  { day: 1, no: 2, name: 'Debate', cats: 'fun', ico: 'ph-chats-circle', when: 'Midday slot',
+  { day: 1, no: 2, name: 'Debate', cats: 'fun', ico: 'ph-chats-circle', when: '11:30 AM to 12:30 PM',
     rules: ['Round 1 (Quarter Finals): 4 match-ups. Round 2 (Semi Finals): 2 match-ups. Round 3 (Finals): 1 match-up to decide the winner.', '5 minutes per team match, with a 5-minute break between rounds.', 'Topics are assigned by the panel / organisers. Speakers must stick strictly to their time slot; reading entirely from paper is discouraged.'], awards: '1st' },
-  { day: 1, no: 3, name: 'Essay Writing', cats: 'creative', ico: 'ph-pen-nib', when: 'Morning slot',
+  { day: 1, no: 3, name: 'Essay Writing', cats: 'creative', ico: 'ph-pen-nib', when: '10:30 AM to 11:30 AM',
     rules: ['Languages allowed: English, Hindi or Punjabi.', 'Topic assigned by faculty on the spot. Suggested themes: Cultural Significance of Festivals, Modern Lifestyle vs. Traditional Values, Environmental Impact of Festivals.', 'Written live on sheets provided at the venue within the time limit. No smart devices or internet reference material permitted.', 'Judged on content clarity, vocabulary, structural flow and relevance to the topic.'], awards: '1st, 2nd' },
-  { day: 1, no: 4, name: 'Technical Poster & Chart Making', cats: 'creative art', ico: 'ph-presentation-chart', when: 'Midday slot',
+  { day: 1, no: 4, name: 'Technical Poster & Chart Making', cats: 'creative art', ico: 'ph-presentation-chart', when: '03:00 PM to 04:00 PM',
     rules: ['Technical theme (e.g. Green Computing, AI & Future Technology, Cybersecurity Awareness, Eco-Friendly Innovation).', 'Must be created manually on an A3 size drawing sheet or chart paper, provided or verified on the spot.', 'All work drawn and painted live. Pre-drawn outlines or traced work means immediate disqualification.', 'Participants bring their own art supplies (watercolours, acrylics, oil pastels, poster colours, markers, pencils, brushes, rulers).', 'Judged on technical clarity, visual presentation, cleanliness and factual accuracy.', 'Maximum 2 participants per entry.'], awards: '1st, 2nd' },
-  { day: 1, no: 5, name: 'Turban Tying', cats: 'cultural', ico: 'ph-crown-simple', when: 'Afternoon slot',
+  { day: 1, no: 5, name: 'Turban Tying', cats: 'cultural', ico: 'ph-crown-simple', when: '02:30 PM to 03:00 PM',
     rules: ['Participants either bring their own model or tie the turban on themselves live.', 'Participants bring their own turban fabric (Pagg) and accessories.', 'Judged on neatness, shape, symmetry, alignment of folds (larhs) and traditional styling.', 'Must be completed within the designated 45-60 minute window.'], awards: '1st, 2nd' },
-  { day: 1, no: 6, name: 'Diya & Thali Decoration', cats: 'cultural art', ico: 'ph-flame', when: 'Afternoon slot',
+  { day: 1, no: 6, name: 'Diya & Thali Decoration', cats: 'cultural art', ico: 'ph-flame', when: '01:30 PM to 02:30 PM',
     rules: ['Each participant must paint and decorate a matching set of 2 earthen diyas and 1 thali with an identical theme across the set.', 'Participants bring their own plain diyas, thali, acrylic/poster paints, glitters, mirrors and paintbrushes.', 'Painting must be done strictly on the spot within the assigned venue room.', 'Maximum 2 participants per entry.'], awards: '1st, 2nd' },
-  { day: 1, no: 7, name: 'Best Out of Waste', cats: 'art creative', ico: 'ph-recycle', when: 'Morning slot',
+  { day: 1, no: 7, name: 'Best Out of Waste', cats: 'art creative', ico: 'ph-recycle', when: '12:30 PM to 01:30 PM',
     rules: ['Free-style crafting using discarded household / scrap materials (plastic bottles, cardboard, newspapers, old cans, CD disks), brought by the participant.', 'Items must be built on the spot. Pre-assembled base objects are strictly prohibited.', 'Judged on creativity, utility, neatness and effective reuse of waste material.', 'Maximum 2 participants per entry.'], awards: '1st, 2nd' },
 
-  { day: 2, no: 1, name: 'Rangoli', cats: 'cultural art', ico: 'ph-flower-lotus', when: '09:30 AM to 12:30 PM',
+  { day: 2, no: 1, name: 'Rangoli', cats: 'cultural art', ico: 'ph-flower-lotus', when: '09:30 AM to 10:30 AM',
     rules: ['Maximum 2 participants per entry.', 'Free-style artwork on allocated corridor floor spots. Stencils, printed borders or prefabricated stickers are forbidden.', 'Participants supply their own rangoli powders, coloured rice, flower petals or chalk outlines.'], awards: '1st, 2nd' },
-  { day: 2, no: 2, name: 'Decoration', cats: 'art', ico: 'ph-confetti', when: '09:30 AM to 12:30 PM',
+  { day: 2, no: 2, name: 'Decoration', cats: 'art', ico: 'ph-confetti', when: '10:30 AM to 11:30 AM',
     rules: ['Maximum 4 participants per entry.', 'Strict focus on eco-friendly, sustainable and recyclable decorative materials.', 'Decor must be set up only in designated corridor spaces. No direct gluing, nailing or painting on walls, glass doors or college fixtures.'], awards: '1st, 2nd' },
-  { day: 2, no: 3, name: 'Singing', cats: 'perf', ico: 'ph-microphone-stage', when: '10:30 AM to 12:30 PM',
+  { day: 2, no: 3, name: 'Singing', cats: 'perf', ico: 'ph-microphone-stage', when: '12:30 PM to 01:00 PM',
     rules: ['Time limit: 3 to 5 minutes per performance.', 'Solo or duet; light classical, folk, festive or contemporary music.', 'Background karaoke tracks must be submitted to the audio coordinator 30 minutes prior, or participants may carry one acoustic instrument player.', 'Lyrics must be clean and appropriate; offensive, vulgar or politically sensitive songs are strictly barred.'], awards: '1st, 2nd' },
-  { day: 2, no: 4, name: 'Dancing', cats: 'perf', ico: 'ph-music-notes', when: '10:30 AM to 12:30 PM',
+  { day: 2, no: 4, name: 'Dancing', cats: 'perf', ico: 'ph-music-notes', when: '01:00 PM to 02:00 PM',
     rules: ['Solo or duet performances only. Group performances are strictly not allowed.', 'Styles may include folk, classical, western or fusion dance. Time limit: 3 to 5 minutes.', 'Audio tracks must be submitted to the event coordinator in MP3 format (pen drive or shared drive link) at least 30 minutes before the start.', 'Appropriate stage attire required; explicit gestures, moves or music are strictly prohibited.', 'Judged on choreography, rhythm, stage presence, facial expressions and overall execution.'], awards: '1st, 2nd' },
-  { day: 2, no: 5, name: 'Digital Reel Making', cats: 'creative', ico: 'ph-film-reel', when: 'Submission deadline 12:00 PM',
-    rules: ['Maximum duration: 1 minute.', 'Reel must cover all ongoing fest competitions and festive highlights across campus.', 'Submission strictly by 12:00 PM to the respective faculty teachers.', "Editing, music overlay and colour grading may be done on participants' own phones / laptops."], awards: '1st' }
+  { day: 2, no: 5, name: 'Digital Reel Making', cats: 'creative', ico: 'ph-film-reel', when: '11:30 AM to 12:30 PM',
+    rules: ['Maximum duration: 1 minute.', 'Reel must cover all ongoing fest competitions and festive highlights across campus.', 'Submission strictly by 12:30 PM to the respective faculty teachers.', "Editing, music overlay and colour grading may be done on participants' own phones / laptops."], awards: '1st' }
 ];
 
 const SCHEDULE = [
-  { day: 0, time: '28 October 2026', name: 'Mehndi Competition', items: ['Time and rules to be announced'] },
-  { day: 1, time: '10:00 AM - 11:30 AM', name: 'Morning Slot', items: ['Quiz (Round 1)', 'Essay Writing', 'Best Out of Waste'] },
-  { day: 1, time: '11:30 AM - 01:30 PM', name: 'Midday Slot', items: ['Quiz (Round 2)', 'Debate', 'Technical Poster & Chart Making'] },
-  { day: 1, time: '01:30 PM - 02:30 PM', name: 'Lunch Break', items: ['1-hour lunch break'], brk: true },
-  { day: 1, time: '02:30 PM - 03:30 PM', name: 'Afternoon Slot', items: ['Turban Tying', 'Diya & Thali Decoration'] },
-  { day: 2, time: '09:30 AM - 12:30 PM', name: 'Event Slot', items: ['Rangoli', 'Decoration', 'Exhibition Showcase (from 10:00 AM)', 'Singing & Dancing (from 10:30 AM)'] },
-  { day: 2, time: 'By 12:00 PM', name: 'Submission', items: ['Digital Reel Making: final submission to respective faculty'] },
-  { day: 2, time: '12:30 PM - 01:00 PM', name: 'Break', items: ['30-minute break'], brk: true },
-  { day: 2, time: '01:00 PM - 02:30 PM', name: 'Ceremony', items: ['Result Announcement & Prize Distribution'] }
+  { day: 0, time: '11:00 AM - 01:00 PM', name: 'Mehndi', items: ['Mehndi Competition'] },
+  { day: 1, time: '09:30 AM - 10:30 AM', name: 'Quiz', items: ['Quiz'] },
+  { day: 1, time: '10:30 AM - 11:30 AM', name: 'Essay Writing', items: ['Essay Writing'] },
+  { day: 1, time: '11:30 AM - 12:30 PM', name: 'Debate', items: ['Debate'] },
+  { day: 1, time: '12:30 PM - 01:30 PM', name: 'Best Out of Waste', items: ['Best Out of Waste'] },
+  { day: 1, time: '01:30 PM - 02:30 PM', name: 'Diya & Thali Decoration', items: ['Diya & Thali Decoration'] },
+  { day: 1, time: '02:30 PM - 03:00 PM', name: 'Turban Tying', items: ['Turban Tying'] },
+  { day: 1, time: '03:00 PM - 04:00 PM', name: 'Technical Poster & Chart Making', items: ['Technical Poster & Chart Making'] },
+  { day: 2, time: '09:30 AM - 10:30 AM', name: 'Rangoli', items: ['Rangoli'] },
+  { day: 2, time: '10:30 AM - 11:30 AM', name: 'Eco-friendly Decoration', items: ['Decoration'] },
+  { day: 2, time: '11:30 AM - 12:30 PM', name: 'Digital Reel Making', items: ['Digital Reel Making'] },
+  { day: 2, time: '12:30 PM - 01:00 PM', name: 'Singing & Ghazal', items: ['Singing'] },
+  { day: 2, time: '01:00 PM - 02:00 PM', name: 'Punjabi Dance', items: ['Dancing (Gidha, Bhangra, Luddi and more)'] },
+  { day: 2, time: '02:00 PM - 02:45 PM', name: 'Exhibition', items: ['Exhibition Showcase'] },
+  { day: 2, time: '02:45 PM - 03:15 PM', name: 'Break', items: ['30-minute break'], brk: true },
+  { day: 2, time: '03:15 PM - 04:00 PM', name: 'Ceremony', items: ['Result Announcement & Prize Distribution'] }
 ];
 
 
 const PAGE = document.body.dataset.page || 'home';
 const SUMMARY = [
-  { day: 0, date: '28', mon: 'OCT', title: 'Mehndi Competition', time: 'Time to be announced', img: 'assets/schedule/day-0.webp' },
-  { day: 1, date: '05', mon: 'NOV', title: 'Finals Competitions', time: '10:00 AM - 03:30 PM', img: 'assets/schedule/day-1.webp' },
-  { day: 2, date: '06', mon: 'NOV', title: 'Exhibition & Showcase', time: '09:30 AM - 02:30 PM', img: 'assets/schedule/day-2.webp' }
+  { day: 0, date: '28', mon: 'OCT', title: 'Mehndi Competition', time: '11:00 AM - 01:00 PM', img: 'assets/schedule/day-0.webp' },
+  { day: 1, date: '05', mon: 'NOV', title: 'Finals Competitions', time: '09:30 AM - 04:00 PM', img: 'assets/schedule/day-1.webp' },
+  { day: 2, date: '06', mon: 'NOV', title: 'Exhibition & Showcase', time: '09:30 AM - 04:00 PM', img: 'assets/schedule/day-2.webp' }
 ];
 const EXHIBIT = {
   display: { ico: 'ph-palette', title: 'Student Creations Display', who: 'Competition participants',
     rules: ['Participants of Diya Painting, Best Out of Waste, Technical Poster & Chart Making and craft entries must display their best work.', 'Selling the displayed item is optional.'] },
   open: { ico: 'ph-hand-heart', title: 'Open Participation', who: 'Students not taking part in any competition',
     rules: ['Display and sell your own homemade items: handmade crafts, artwork, decorative items and festive gifts.', 'Items must be original and made by the student at home. Ready-made or purchased items are not allowed.', 'Entries are for display and sale only. They are not part of competition judging.', 'Write the Event Name on the price tag as "Open Exhibit".'] },
-  sale: { ico: 'ph-bank', title: 'Cultural Showcase', who: 'Friday 6 November 2026, 10:00 AM to 12:30 PM, Computational Sciences, MRSPTU',
+  sale: { ico: 'ph-bank', title: 'Cultural Showcase', who: 'Friday 6 November 2026, 02:00 PM to 02:45 PM, Computational Sciences, MRSPTU',
     rules: ['Optional sale: participants and open exhibitors may sell crafted items to visitors and faculty.', 'Price tags: students prepare their own tags showing Student Name, Roll No., Event Name and Sale Price.', 'Pricing: reasonable and affordable, decided by the student artist.', 'Transactions are handled directly by the student artist.'] }
 };
 // Reference order for the tiles; the last three sit behind "And Many More" on the home page.
