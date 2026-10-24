@@ -160,13 +160,17 @@ if (PAGE === 'home') {
   if (!isPast(2)) words.splice(words.indexOf('Dancing') + 1, 0, 'Exhibition');
   const strip = words.map(w => `${esc(w)} ✦ `).join('');
   document.querySelectorAll('.marquee-track span').forEach(sp => { sp.textContent = strip; });
-  cardsEl.innerHTML = ORDER.filter(upcoming).map(n => tile(n)).join('') + EXTRA.filter(upcoming).map(n => tile(n, true)).join('') + `
+  // With eight tiles or fewer (the other-departments site, or late in the fest) every event shows at once,
+  // in centred rows of four, and there is no "And Many More" tile.
+  const few = [...ORDER, ...EXTRA].filter(upcoming).length <= 8;
+  cardsEl.classList.toggle('few', few);
+  cardsEl.innerHTML = ORDER.filter(upcoming).map(n => tile(n)).join('') + EXTRA.filter(upcoming).map(n => tile(n, !few)).join('') + (few ? '' : `
   <button type="button" class="tile-more reveal" aria-expanded="false" aria-controls="cards">
     <span class="thumb"><i class="ph ph-gift" aria-hidden="true"></i><img src="assets/events/and-many-more.webp" alt="" loading="lazy" decoding="async" onload="this.classList.add('ok')" onerror="this.remove()"></span>
     <h3>And Many More</h3>
-  </button>`;
+  </button>`);
   const more = $('.tile-more');
-  more.addEventListener('click', () => {
+  if (more) more.addEventListener('click', () => {
     relayout(cardsEl, '.card,.tile-more', () => { cardsEl.classList.add('expanded'); more.setAttribute('aria-expanded', 'true'); more.classList.add('hide'); });
     cardsEl.querySelector('.card.extra .rules-btn').focus({ preventScroll: true });
   });
@@ -177,7 +181,7 @@ if (PAGE === 'home') {
     relayout(cardsEl, '.card,.tile-more', () => {
       cardsEl.classList.toggle('is-all', all);
       cardsEl.querySelectorAll('.card').forEach(c => c.classList.toggle('hide', !all && !c.dataset.cats.split(' ').includes(f)));
-      more.classList.toggle('hide', !all || cardsEl.classList.contains('expanded'));
+      if (more) more.classList.toggle('hide', !all || cardsEl.classList.contains('expanded'));
     });
   });
 

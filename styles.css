@@ -275,6 +275,9 @@ section>.wrap{position:relative}
 .card,.tile-more{grid-column:span 6;position:relative;display:flex;flex-direction:column;padding:7px 7px 0;border:1px solid var(--line);border-radius:10px;
   background:linear-gradient(180deg,var(--card-2),var(--card));transition:transform .25s,border-color .25s,box-shadow .25s}
 .cards.is-all .card:nth-child(n+6),.cards.is-all .tile-more{grid-column:span 5}
+/* eight tiles or fewer: centred rows of four */
+.cards.few{display:flex;flex-wrap:wrap;justify-content:center}
+.cards.few .card{flex:0 0 calc(25% - 12px);max-width:260px}
 .card:hover,.tile-more:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 16px 36px rgba(0,0,0,.4),0 0 24px rgba(242,181,58,.18)}
 .card.hide,.tile-more.hide,.cards.is-all:not(.expanded) .card.extra{display:none}
 .thumb{aspect-ratio:16/10;border-radius:6px;overflow:hidden;background:var(--card-2);display:grid;place-items:center}
@@ -454,6 +457,7 @@ html:not(.gs) #progress{display:none}
   .benefits{grid-template-columns:repeat(2,1fr);margin-top:110px}
   .cards{grid-template-columns:repeat(4,minmax(0,1fr))}
   .card,.tile-more,.cards.is-all .card:nth-child(n+6),.cards.is-all .tile-more{grid-column:span 1}
+  .cards.few .card{flex-basis:calc(25% - 12px);max-width:none}
   .cta-trophy{width:260px}
 }
 @media (max-width:900px){
@@ -508,6 +512,8 @@ html:not(.gs) #progress{display:none}
   .sch-lamps{width:170px;right:-30px}
   .ev-fairy{width:200px}
   .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .cards.few{gap:12px}
+  .cards.few .card{flex-basis:calc(50% - 6px)}
   .cards.is-all .tile-more{grid-column:span 2}
   .tile-more .thumb{aspect-ratio:16/6}
   .filters{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;margin:24px calc(-1*var(--gutter)) 24px;padding:0 var(--gutter) 4px;scrollbar-width:none}

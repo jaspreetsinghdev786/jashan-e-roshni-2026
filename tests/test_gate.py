@@ -47,7 +47,8 @@ def page(browser, url):
     return ctx, pg, errs
 
 def build():
-    subprocess.run(['node', 'build.js', 'all'], cwd=ROOT, check=True, capture_output=True)
+    for m in ('cs', 'other'):
+        subprocess.run(['node', 'build.js', m], cwd=ROOT, check=True, capture_output=True)
 
 # ---------- unit tests: the gate functions inside app.js ----------
 def unit(browser):
@@ -81,8 +82,7 @@ def unit(browser):
 
     # stamped builds
     for dept, want in (('cs', [False, False, False]), ('other', [True, False, True])):
-        sub = '' if dept == 'cs' else 'open/'
-        ctx, pg, errs = page(browser, f'http://127.0.0.1:{PORT}/dist/all/{sub}index.html?today=2026-10-24')
+        ctx, pg, errs = page(browser, f'http://127.0.0.1:{PORT}/dist/{dept}/index.html?today=2026-10-24')
         check('unit', f'SITE_DEPT stamped as {dept}', pg.evaluate('SITE_DEPT') == dept)
         got = pg.evaluate('[0,1,2].map(d => closedTo(d))')
         check('unit', f'closedTo on {dept} build', got == want, f'got {got}')
@@ -95,8 +95,7 @@ EXPECT = {
 }
 def integration(browser):
     for dept in ('cs', 'other'):
-        sub = '' if dept == 'cs' else 'open/'
-        base = f'http://127.0.0.1:{PORT}/dist/all/{sub}'
+        base = f'http://127.0.0.1:{PORT}/dist/{dept}/'
         want = EXPECT[dept]
         for name in PAGES:
             ctx, pg, errs = page(browser, f'{base}{name}.html?today=2026-10-24')
@@ -106,11 +105,13 @@ def integration(browser):
             check(dept, f'{name}: no broken images', not broken, broken)
             hrefs = pg.evaluate('[...document.querySelectorAll("a[href$=\'.html\']")].map(a => a.getAttribute("href"))')
             check(dept, f'{name}: internal links stay relative', all(not h.startswith('/') for h in hrefs), hrefs[:5])
-            check(dept, f'{name}: nav links point inside this build', all(sub in u for u in pg.evaluate('[...document.querySelectorAll("nav a[href$=\'.html\']")].map(a => a.href)')) if sub else True)
+            nav_hrefs = pg.evaluate('[...document.querySelectorAll("nav a")].map(a => a.href).filter(h => h.endsWith(".html"))')
+            check(dept, f'{name}: nav links point inside this build', all(f'/dist/{dept}/' in u for u in nav_hrefs), nav_hrefs[:3])
 
             if name == 'index':
                 check(dept, 'home: schedule cards', pg.evaluate('document.querySelectorAll(".sch-card").length') == want['sch'])
                 check(dept, 'home: event tiles', pg.evaluate('document.querySelectorAll("#cards .card").length') == want['cards'])
+                check(dept, 'home: And Many More tile only with many events', pg.evaluate('!!document.querySelector(".tile-more")') == (dept == 'cs'))
                 check(dept, 'home: hero date boxes visible', pg.evaluate('document.querySelectorAll(".dates li:not(.past)").length') == want['days'])
                 if dept == 'other':
                     check(dept, 'home: other-department wording', 'every department' in pg.evaluate('document.querySelector(".h-sub").textContent + document.querySelector(".schedule .sub").textContent'))
@@ -150,14 +151,14 @@ def integration(browser):
     ctx.close()
 
     # date gate end to end on the CS build
-    ctx, pg, errs = page(browser, f'http://127.0.0.1:{PORT}/dist/all/index.html?today=2026-10-29')
+    ctx, pg, errs = page(browser, f'http://127.0.0.1:{PORT}/dist/cs/index.html?today=2026-10-29')
     check('date', 'after 28 Oct: 2 schedule cards', pg.evaluate('document.querySelectorAll(".sch-card").length') == 2)
     check('date', 'after 28 Oct: Mehndi tile gone', pg.evaluate('![...document.querySelectorAll("#cards .card h3")].some(h => h.textContent.includes("Mehndi"))'))
     ctx.close()
-    ctx, pg, errs = page(browser, f'http://127.0.0.1:{PORT}/dist/all/schedule.html?today=2026-11-06')
+    ctx, pg, errs = page(browser, f'http://127.0.0.1:{PORT}/dist/cs/schedule.html?today=2026-11-06')
     check('date', 'on 6 Nov: only day 2 section', pg.evaluate('[...document.querySelectorAll(".tt-day h2")].map(h => h.textContent)') == ['Day 2, Friday 6 November 2026'])
     ctx.close()
-    ctx, pg, errs = page(browser, f'http://127.0.0.1:{PORT}/dist/all/schedule.html?today=2026-11-20')
+    ctx, pg, errs = page(browser, f'http://127.0.0.1:{PORT}/dist/cs/schedule.html?today=2026-11-20')
     check('date', 'after the fest: all 3 days back', pg.evaluate('document.querySelectorAll(".tt-day").length') == 3)
     ctx.close()
 

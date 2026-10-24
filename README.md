@@ -23,11 +23,13 @@ python tests/run_tests.py
 
 ## Deployments
 
-One codebase, one Vercel site with two entrances. `build.js` stamps the department on `<html data-dept="…">`, which removes the department popup and hides the days that department cannot enter.
+One codebase, two Vercel sites on separate domains. `build.js` stamps the department on `<html data-dept="…">`, which removes the department popup, hides the days that department cannot enter and bakes in the matching wording.
 
-| Audience | URL |
-|---|---|
-| Computational Sciences (all events) | https://jashan-e-roshni-2026-eight.vercel.app |
-| Other departments (5 Nov only) | https://jashan-e-roshni-2026-eight.vercel.app/open/ |
+| Audience | Build | URL |
+|---|---|---|
+| Computational Sciences (all events) | `node build.js cs` then `vercel --prod` inside `dist/cs` | https://jashan-e-roshni-2026-eight.vercel.app |
+| Other departments (5 Nov only) | `node build.js other` then `vercel --prod` inside `dist/other` | https://jashan-e-roshni-2026-open.vercel.app |
 
-Deploy: `node build.js all`, then `vercel --prod` inside `dist/all`. The root folder (with the popup) still runs as-is for local preview. `dist/` is ignored by git; `dist/all/.vercel` holds the project link. `node build.js cs` or `other` builds a single-department copy if one is ever needed on its own.
+The two are separate deployments, so no path on one reaches the other. The root folder (with the popup) still runs as-is for local preview. `dist/` is ignored by git; each `dist/<dept>/.vercel` folder holds that site's project link. `node build.js all` still produces a combined site with the other-departments copy under `/open/` if a single domain is ever wanted.
+
+Tests: `python tests/test_gate.py` builds both sites and runs the unit and integration checks (needs Playwright plus Edge or Chrome).
