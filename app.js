@@ -16,9 +16,9 @@ document.querySelectorAll('.js-form').forEach(a => {
 });
 
 const DAYS = {
-  0: { date: '2026-10-28', label: 'Pre-fest, Wednesday 28 October 2026', short: '28 Oct', who: 'Computational Sciences students' },
-  1: { date: '2026-11-05', label: 'Day 1, Thursday 5 November 2026', short: '5 Nov', who: 'Open to all departments' },
-  2: { date: '2026-11-06', label: 'Day 2, Friday 6 November 2026', short: '6 Nov', who: 'Computational Sciences students' }
+  0: { date: '2026-10-28', label: 'Pre-fest, Wednesday 28 October 2026', short: '28 Oct', who: 'Computational Sciences students', open: false },
+  1: { date: '2026-11-05', label: 'Day 1, Thursday 5 November 2026', short: '5 Nov', who: 'All departments, including Computational Sciences', open: true },
+  2: { date: '2026-11-06', label: 'Day 2, Friday 6 November 2026', short: '6 Nov', who: 'Computational Sciences students', open: false }
 };
 
 // A day drops off every page from the day after it. `?today=YYYY-MM-DD` on any page previews a date.
@@ -27,7 +27,7 @@ const over = date => new Date(date + 'T23:59:59') < TODAY;
 const FEST_OVER = Object.values(DAYS).every(d => over(d.date)); // once the fest is done, nothing is hidden
 // A build can stamp the site for one department (build.js): then CS-only days are hidden on the "other" site.
 const SITE_DEPT = document.documentElement.dataset.dept || null;
-const closedTo = day => SITE_DEPT === 'other' && DAYS[day].who !== 'Open to all departments';
+const closedTo = day => SITE_DEPT === 'other' && !DAYS[day].open;
 const isPast = day => (!FEST_OVER && over(DAYS[day].date)) || closedTo(day);
 // Copy that reads differently on the other-departments site carries its wording in data-other.
 if (SITE_DEPT === 'other') document.querySelectorAll('[data-other]').forEach(el => { el.textContent = el.dataset.other; });
@@ -274,7 +274,7 @@ if (PAGE === 'events') {
   let dept = SITE_DEPT, cat = 'all';
   if (!dept) try { dept = localStorage.getItem('dept'); } catch (e) {}
   if (SITE_DEPT) chip.hidden = true; // a stamped site already knows the department
-  const openTo = i => DAYS[i.dataset.day].who === 'Open to all departments';
+  const openTo = i => DAYS[i.dataset.day].open;
   const apply = () => {
     items.forEach(i => i.classList.toggle('hide', (cat !== 'all' && !i.dataset.cats.split(' ').includes(cat)) || (dept === 'other' && !openTo(i))));
     const n = items.filter(i => !i.classList.contains('hide')).length;
