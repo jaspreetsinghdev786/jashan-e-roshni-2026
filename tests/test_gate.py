@@ -126,6 +126,8 @@ def integration(browser):
                     check(dept, 'schedule: only 5 Nov slots', pg.evaluate('[...document.querySelectorAll(".tt-day h2")].every(h => h.textContent.includes("5 November"))'))
             if name == 'events':
                 check(dept, 'events: no department popup', not pg.evaluate('document.querySelector("#deptDialog").open'))
+                perf = pg.evaluate('document.querySelector("#evFilters [data-f=\\"perf\\"]").hidden')
+                check(dept, 'events: Performing Arts chip only when it has events', perf == (dept == 'other'))
                 check(dept, 'events: change-department chip hidden', pg.evaluate('document.querySelector("#deptChip").hidden'))
                 check(dept, 'events: count', pg.evaluate('document.querySelector("#evCount").textContent') == f"{want['events']} of {want['events']} events")
                 check(dept, 'events: 5 Nov events present for everyone', pg.evaluate('[...document.querySelectorAll(".ev-item .ev-day")].filter(e => e.textContent === "5 Nov").length') == 7)

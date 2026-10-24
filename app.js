@@ -127,6 +127,13 @@ function relayout(grid, items, change) {
     onComplete: () => { grid.classList.remove('flipping'); ScrollTrigger.refresh(); }
   });
 }
+// A category chip is dropped when none of the events shown belong to it (e.g. no performing arts on 5 Nov).
+function pruneChips(group, items) {
+  group.querySelectorAll('.chip').forEach(c => {
+    const f = c.dataset.f;
+    c.hidden = f !== 'all' && !items.some(i => i.dataset.cats.split(' ').includes(f));
+  });
+}
 function pressChip(group, b) {
   group.querySelectorAll('.chip').forEach(c => { const on = c === b; c.classList.toggle('active', on); c.setAttribute('aria-pressed', on); });
 }
@@ -174,6 +181,7 @@ if (PAGE === 'home') {
     relayout(cardsEl, '.card,.tile-more', () => { cardsEl.classList.add('expanded'); more.setAttribute('aria-expanded', 'true'); more.classList.add('hide'); });
     cardsEl.querySelector('.card.extra .rules-btn').focus({ preventScroll: true });
   });
+  pruneChips($('#filters'), [...cardsEl.querySelectorAll('.card')]);
   $('#filters').addEventListener('click', e => {
     const b = e.target.closest('.chip'); if (!b) return;
     const f = b.dataset.f, all = f === 'all';
@@ -301,6 +309,7 @@ if (PAGE === 'events') {
     relayout(list, '.ev-item', apply);
   });
   chip.addEventListener('click', () => dlg.showModal());
+  pruneChips($('#evFilters'), items);
   $('#evFilters').addEventListener('click', e => {
     const b = e.target.closest('.chip'); if (!b) return;
     cat = b.dataset.f;
