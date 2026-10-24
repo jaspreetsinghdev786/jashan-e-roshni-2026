@@ -264,14 +264,33 @@ if (PAGE === 'events') {
     </article>`;
   }).join('');
   const count = $('#evCount'), items = [...list.querySelectorAll('.ev-item')];
-  const showCount = () => { count.textContent = `${items.filter(i => !i.classList.contains('hide')).length} of ${items.length} events`; };
-  showCount();
+  // Department gate: Computational Sciences students see every event; other departments only the open days.
+  const dlg = $('#deptDialog'), chip = $('#deptChip');
+  let dept = null, cat = 'all';
+  try { dept = localStorage.getItem('dept'); } catch (e) {}
+  const openTo = i => DAYS[i.dataset.day].who === 'Open to all departments';
+  const apply = () => {
+    items.forEach(i => i.classList.toggle('hide', (cat !== 'all' && !i.dataset.cats.split(' ').includes(cat)) || (dept === 'other' && !openTo(i))));
+    const n = items.filter(i => !i.classList.contains('hide')).length;
+    count.textContent = `${n} of ${items.length} events`;
+    chip.textContent = dept === 'other' ? 'Another department' : dept === 'cs' ? 'Computational Sciences' : 'Choose department';
+  };
+  apply();
+  if (dept !== 'cs' && dept !== 'other') dlg.showModal();
+  dlg.addEventListener('cancel', e => e.preventDefault()); // a choice is required
+  dlg.addEventListener('click', e => {
+    const b = e.target.closest('[data-dept]'); if (!b) return;
+    dept = b.dataset.dept;
+    try { localStorage.setItem('dept', dept); } catch (e) {}
+    dlg.close();
+    relayout(list, '.ev-item', apply);
+  });
+  chip.addEventListener('click', () => dlg.showModal());
   $('#evFilters').addEventListener('click', e => {
     const b = e.target.closest('.chip'); if (!b) return;
-    const f = b.dataset.f;
+    cat = b.dataset.f;
     pressChip($('#evFilters'), b);
-    relayout(list, '.ev-item', () => items.forEach(i => i.classList.toggle('hide', f !== 'all' && !i.dataset.cats.split(' ').includes(f))));
-    showCount();
+    relayout(list, '.ev-item', apply);
   });
 }
 

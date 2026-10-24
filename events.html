@@ -58,6 +58,7 @@
         <button class="chip" data-f="fun" aria-pressed="false">Fun Events</button>
         </div>
         <p class="ev-count" id="evCount" aria-live="polite"></p>
+        <button type="button" class="chip dept-chip" id="deptChip" aria-haspopup="dialog">Change department</button>
       </div>
       <div class="ev-list" id="eventList"></div>
     </div>
@@ -107,6 +108,17 @@
     <a class="totop" href="#main" aria-label="Back to top"><i class="ph ph-arrow-up" aria-hidden="true"></i></a>
   </div>
 </footer>
+
+<dialog id="deptDialog" aria-labelledby="dept-title" data-lenis-prevent>
+  <div class="rd-box dept-box">
+    <div class="rd-head"><span class="card-ico"><i class="ph ph-graduation-cap" aria-hidden="true"></i></span>
+      <div><h3 id="dept-title">Which department are you from?</h3><p class="when">We will show the events you can take part in.</p></div></div>
+    <div class="dept-opts">
+      <button type="button" class="btn gold" data-dept="cs"><i class="ph ph-cpu" aria-hidden="true"></i>Computational Sciences</button>
+      <button type="button" class="btn ghost" data-dept="other"><i class="ph ph-buildings" aria-hidden="true"></i>Another department</button>
+    </div>
+  </div>
+</dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>

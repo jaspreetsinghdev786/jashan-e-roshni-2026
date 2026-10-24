@@ -857,3 +857,10 @@ a.tag i{font-size:.9em}
 
 /* days already over drop off every page (set in app.js from the date) */
 [data-day].past{display:none!important}
+
+/* events page: department chooser */
+.dept-box{width:min(520px,calc(100vw - 32px))}
+.dept-opts{display:grid;gap:12px}
+.dept-opts .btn{justify-content:center;width:100%}
+.dept-chip{border-color:var(--gold);color:var(--gold)}
+.ev-bar .ev-count{margin-left:auto}
