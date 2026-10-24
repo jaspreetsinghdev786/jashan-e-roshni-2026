@@ -332,6 +332,7 @@ section>.wrap{position:relative}
 footer{position:relative;z-index:1;background:#1a0511;padding:36px 0}
 .foot{display:grid;grid-template-columns:1.2fr auto auto auto;align-items:center;gap:40px}
 .foot-id p{margin-top:8px;font-size:.84rem;color:var(--muted);line-height:1.5}
+.foot-credit{font-size:.78rem;color:var(--gold-2)}
 footer nav{display:flex;flex-wrap:wrap;gap:28px;font-size:.9rem}
 footer nav a:hover{color:var(--gold-2)}
 .social{display:flex;gap:12px}
@@ -795,7 +796,7 @@ a.tag i{font-size:.9em}
 /* logo: gold lotus mark (assets/logo-lotus.webp) and a gold wordmark */
 .brand{gap:10px}
 .brand-mark{width:auto;height:28px;flex:none;filter:drop-shadow(0 0 6px rgba(255,190,80,.35))}
-.brand-word{font-weight:600;letter-spacing:.01em;background:linear-gradient(180deg,#ffeab4 0%,#f7c35a 52%,#d98b29 100%);
+.brand-word{font-weight:600;letter-spacing:.01em;background:linear-gradient(180deg,#ffffff 0%,#fff3cf 38%,#f7c35a 70%,#d98b29 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(255,180,70,.18))}
 .brand:hover .brand-mark{transform:rotate(-6deg) scale(1.06)}
 .brand-mark{transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
@@ -803,3 +804,53 @@ a.tag i{font-size:.9em}
   .hn-brand .brand-mark{height:calc(40*var(--u))}
 }
 .lite .brand-mark,.lite .brand-word{filter:none}
+
+/* =========================================================================
+   Ivory sections: white ground, maroon ink, gold accents. Alternates with the dark maroon sections.
+   ========================================================================= */
+:root{--maroon:#4a0a26; --maroon-2:#6b1538; --ivory:#fffaf2; --ivory-2:#fff3e0}
+.ivory{--ink:var(--maroon); --muted:#7a4a5e; --card:#fff; --card-2:#fff3e0;
+  --line:rgba(190,130,30,.45); --line-soft:rgba(190,130,30,.22); --gold-2:#c98a12; --on-gold:#fff;
+  color:var(--ink);background:linear-gradient(180deg,var(--ivory),var(--ivory-2));border-top:0!important;
+  box-shadow:inset 0 3px 0 var(--gold),inset 0 5px 0 #fff,inset 0 6px 0 var(--gold)}
+.ivory .deco{mix-blend-mode:multiply;opacity:.14;filter:none}
+.ivory :is(h1,h2,h3,h4,h5,strong,.sec-title,.pg-h2,.ex-title,.tt-title h2,.tt-slot h3,.info-card h3,.rs-cards h3,.benefits h3,.ct-card h2,.sch-txt strong){color:var(--maroon)}
+.ivory :is(.sec-title em,.pg-h2 em,.ex-title em,.lead b){color:var(--gold-2)}
+.ivory .sec-title.center em{background:linear-gradient(180deg,#d9981a,#a86a08);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ivory :is(p,li,small,.sec-sub,.when,.ev-count){color:var(--ink)}
+.ivory :is(.benefits p,.rs-cards p,.info-card p,.ex-card small,.sch-meta,.tt-who,.pg-sub){color:var(--muted)}
+.ivory :is(.benefits li,.rs-cards li,.info-card,.xb,.ct-card,.ex-card,.tt-head,.tt-slot,.sch-card,.ev-card,.pg-dates a,.card,.tile-more){
+  background:#fff;border:1px solid var(--line);box-shadow:0 10px 28px rgba(74,10,38,.1)}
+.ivory :is(.benefits li,.rs-cards li,.info-card,.xb,.ct-card):hover{border-color:var(--gold);box-shadow:0 16px 36px rgba(74,10,38,.16)}
+.ivory :is(.rs-cards i,.ct-ico,.xb-ico,.card-ico){background:linear-gradient(160deg,#fff3d6,#ffe3a6);box-shadow:inset 0 0 0 1px rgba(201,138,18,.3);color:var(--maroon)}
+.ivory :is(.benefits i,.facts i,.tt-kicker,.tt-slot time,.sch-meta i,.tt-who i,.ex-go,.sch-go,.pg-divider){color:#b8780c}
+.ivory .ex-card{background:#fff}
+.ivory .ex-card::before{border-color:rgba(201,138,18,.45)}
+.ivory .ex-card strong{color:var(--maroon)}
+.ivory .ex-card button:hover strong{color:#b8780c}
+.ivory .ex-ico{border-color:#b8780c;color:#b8780c}
+.ivory .tt-date{background:radial-gradient(circle,#fff,#fff0d2);box-shadow:0 0 0 4px rgba(201,138,18,.15)}
+.ivory .tt-date b{color:var(--maroon)}
+.ivory .tt-slot.brk{background:transparent;border-style:dashed}
+.ivory .tt-slot.brk h3{color:var(--muted)}
+.ivory .tt-slots::before{background:linear-gradient(#c98a12,rgba(201,138,18,.15))}
+.ivory .tt-slot::before{background:#c98a12;box-shadow:0 0 0 4px rgba(201,138,18,.18)}
+.ivory .tag,.ivory .badge.alt{background:#fff3d6;border-color:rgba(201,138,18,.4);color:var(--maroon)}
+.ivory .chip{background:#fff;color:var(--maroon)}
+.ivory .chip.active{color:#fff;background:var(--maroon)}
+.ivory .btn.ghost{border-color:var(--maroon);color:var(--maroon);background:#fff}
+.ivory .btn.ghost i{color:var(--maroon)}
+.ivory .btn.gold{color:#3a0a1f}
+.ivory .scribble{color:var(--maroon);text-shadow:none}
+.ivory .collage img{border-color:#fff;box-shadow:0 16px 34px rgba(74,10,38,.25)}
+.ivory .more-link,.ivory .ct-social a{color:var(--maroon)}
+.ivory .ct-social a{border-color:var(--line)}
+.ivory .ct-social a:hover{background:var(--gold);color:#3a0a1f}
+.ivory .ev-day,.ivory .when-chip{background:#fff3d6;color:var(--maroon)}
+.ivory .ev-card:hover,.ivory .tt-slot:hover,.ivory .sch-card:hover{border-color:#b8780c}
+.ivory :focus-visible{outline-color:var(--maroon)}
+/* index: open + results sections carry their own art; keep a faint wash of it */
+.open.ivory{background:linear-gradient(90deg,var(--ivory) 0,var(--ivory) 30%,rgba(255,250,242,.82) 48%,rgba(255,250,242,.35) 72%),linear-gradient(0deg,var(--ivory) 0,transparent 45%),url(assets/campus.webp) right top/auto 100% no-repeat,var(--ivory)}
+.results.ivory{background:linear-gradient(180deg,rgba(255,250,242,.93),rgba(255,243,224,.95)),url(assets/ui/results-bg.webp) 50% 30%/cover no-repeat,var(--ivory)}
+.benefits.ivory li,.ivory .benefits li{background:#fff}
+.lite .ivory .rs-cards li{background:#fff}
