@@ -29,6 +29,8 @@ const FEST_OVER = Object.values(DAYS).every(d => over(d.date)); // once the fest
 const SITE_DEPT = document.documentElement.dataset.dept || null;
 const closedTo = day => SITE_DEPT === 'other' && DAYS[day].who !== 'Open to all departments';
 const isPast = day => (!FEST_OVER && over(DAYS[day].date)) || closedTo(day);
+// Copy that reads differently on the other-departments site carries its wording in data-other.
+if (SITE_DEPT === 'other') document.querySelectorAll('[data-other]').forEach(el => { el.textContent = el.dataset.other; });
 const live = list => list.filter(x => !isPast(x.day));
 document.querySelectorAll('[data-day]').forEach(el => { if (isPast(el.dataset.day)) el.classList.add('past'); });
 
