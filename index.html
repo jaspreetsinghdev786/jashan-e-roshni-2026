@@ -16,7 +16,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
-<script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('gs');</script>
+<script>(function (h) {
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) h.classList.add('gs');
+  if (matchMedia('(hover: none) and (pointer: coarse), (max-width: 900px)').matches) h.classList.add('lite'); // phones and touch screens
+})(document.documentElement);</script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body data-page="home">
@@ -25,7 +28,7 @@
 <div id="progress" aria-hidden="true"></div>
 
 <header class="nav" id="nav">
-  <a class="brand" href="#top"><i class="ph-fill ph-flower-lotus" aria-hidden="true"></i><span>Jashan-e-Roshni</span></a>
+  <a class="brand" href="#top"><img class="brand-mark" src="assets/logo-lotus.webp" alt="" width="47" height="28"><span class="brand-word">Jashan-e-Roshni</span></a>
   <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu"><i class="ph ph-list" aria-hidden="true"></i></button>
   <nav aria-label="Primary" id="navLinks">
     <a href="#top" aria-current="page">Home</a>
@@ -41,7 +44,7 @@
   <section class="hero">
     <div class="wrap stage">
       <div class="hero-nav">
-        <a class="brand hn-brand" href="#top"><i class="ph-fill ph-flower-lotus" aria-hidden="true"></i><span>Jashan-e-Roshni</span></a>
+        <a class="brand hn-brand" href="#top"><img class="brand-mark" src="assets/logo-lotus.webp" alt="" width="47" height="28"><span class="brand-word">Jashan-e-Roshni</span></a>
         <nav class="hn-links" aria-label="Hero">
           <a href="#top" aria-current="page">Home</a><a href="schedule.html">Schedule</a><a href="events.html">Events</a><a href="exhibition.html">Exhibition</a><a href="contact.html">Contact</a>
         </nav>
@@ -208,7 +211,7 @@
 <footer id="contact">
   <div class="wrap foot">
     <div class="foot-id">
-      <a class="brand" href="#top"><i class="ph-fill ph-flower-lotus" aria-hidden="true"></i><span>Jashan-e-Roshni</span></a>
+      <a class="brand" href="#top"><img class="brand-mark" src="assets/logo-lotus.webp" alt="" width="47" height="28"><span class="brand-word">Jashan-e-Roshni</span></a>
       <p>Department of Computational Sciences<br>MRSPTU, Bathinda</p>
     </div>
     <nav aria-label="Footer">

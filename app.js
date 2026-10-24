@@ -2,6 +2,9 @@
 const GS = !!(window.gsap && window.ScrollTrigger);
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MOTION = GS && !REDUCED;
+// Phones and touch screens get native scrolling and only cheap transform/opacity motion.
+const LITE = document.documentElement.classList.contains('lite');
+if (GS) { gsap.registerPlugin(ScrollTrigger); ScrollTrigger.config({ ignoreMobileResize: true }); }
 document.documentElement.classList.toggle('gs', MOTION); // set early in <head>; dropped here if GSAP failed to load
 
 const $ = s => document.querySelector(s);
@@ -265,6 +268,18 @@ if (PAGE === 'exhibition') {
     </article>`).join('');
 }
 
+/* ---------- contact page: the Google map embed is heavy, so it loads after the page, once the map is near the screen ---------- */
+if (PAGE === 'contact') {
+  const box = $('.ct-map');
+  addEventListener('load', () => new IntersectionObserver((entries, io) => {
+    if (!entries.some(e => e.isIntersecting)) return;
+    io.disconnect();
+    const f = document.createElement('iframe');
+    f.title = 'Map of MRSPTU, Bathinda'; f.src = box.dataset.map; f.referrerPolicy = 'no-referrer-when-downgrade';
+    box.appendChild(f);
+  }, { rootMargin: '300px' }).observe(box));
+}
+
 /* ---------- nav menu toggle on small screens ---------- */
 const navLinks = $('#navLinks'), navToggle = $('#navToggle');
 navToggle.addEventListener('click', () => {
@@ -275,7 +290,7 @@ navToggle.addEventListener('click', () => {
 navLinks.addEventListener('click', e => { if (e.target.closest('a')) { navLinks.classList.remove('open'); navToggle.setAttribute('aria-expanded', 'false'); } });
 
 /* ---------- embers (ambient, skipped for reduced motion) ---------- */
-if (!REDUCED) {
+if (!REDUCED && !LITE) {
   const cv = $('#sparks'), cx = cv.getContext('2d');
   let W, H, vis = true; const P = [];
   const size = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
@@ -313,7 +328,7 @@ if (MOTION) {
   const has = s => !!document.querySelector(s);
 
   // Smooth scroll enhances native scroll; it never replaces it.
-  if (window.Lenis) {
+  if (window.Lenis && !LITE) {
     const lenis = new Lenis({ lerp: .1 }); window.__lenis = lenis;
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add(t => lenis.raf(t * 1000));
@@ -327,7 +342,7 @@ if (MOTION) {
   // CSS hover transitions on transform pause while GSAP moves an element, then GSAP hands it back.
   const lock = t => gsap.utils.toArray(t).forEach(e => e.classList.add('m-lock'));
   const release = t => { const els = gsap.utils.toArray(t); gsap.set(els, { clearProps: 'transform' }); els.forEach(e => e.classList.remove('m-lock')); };
-  const enter = (trigger, start = 'top 85%') => ({ trigger, start, once: true });
+  const enter = (trigger, start = 'top 85%') => ({ trigger, start: LITE ? 'top bottom+=300' : start, once: true });
   const rise = (targets, trigger, vars = {}) => {
     if (!has(targets)) return;
     lock(targets);
@@ -348,14 +363,22 @@ if (MOTION) {
   gsap.to('#progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: .3 } });
 
   if (PAGE === 'home') {
-    // Hero: the artwork settles in, the title letters rise, and everything on the artwork's slots fades in place.
+    // Hero: the artwork settles in and the title letters rise. Text on the artwork's boxes arrives with the artwork,
+    // so the boxes never show empty, then a light sweeps across each date box and the gold button.
     gsap.timeline({ defaults: { ease: 'power3.out' } })
       .fromTo('.hero', { autoAlpha: 0, scale: 1.04 }, { autoAlpha: 1, scale: 1, duration: 1.1, ease: 'power2.out' })
+      .from('.hero-nav > *, .band li, .hero-diya', { autoAlpha: 0, duration: .6, stagger: .04 }, .1)
+      .from('.dates li > *', { autoAlpha: 0, y: 10, duration: .6, stagger: .05 }, .15)
+      .from('.hero-cta .btn', { autoAlpha: 0, duration: .6, stagger: .08 }, .15)
       .from('.h-eyebrow, .h-tag, .h-sub', { autoAlpha: 0, y: 16, duration: .7, stagger: .1 }, .35)
-      .from('.hero-nav > *, .band li, .dates li, .hero-cta .btn, .hero-diya', { autoAlpha: 0, duration: .7, stagger: .05 }, .55);
+      .add(() => gsap.utils.toArray('.dates li, .hero-cta .btn.gold').forEach((el, i) => gsap.delayedCall(i * .12, () => {
+        el.addEventListener('animationend', () => el.classList.remove('glint'), { once: true });
+        el.classList.add('glint');
+      })), 1.05);
     splitChars('.hero h1', .3);
     // Scrolling away, the hero sinks a little behind the dates strip.
-    gsap.to('.hero', { yPercent: 16, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+    // Measured from scroll positions, not the hero box, so the intro zoom cannot skew the start.
+    if (!LITE) gsap.to('.hero', { yPercent: 16, ease: 'none', scrollTrigger: { start: 0, end: () => $('.hero').offsetHeight, scrub: true } });
 
     // Dates strip (artwork band): numbers pop in place, labels and venue rows fade. Nothing crosses the frame lines.
     gsap.timeline({ scrollTrigger: enter('.strip', 'top 88%') })
@@ -365,6 +388,8 @@ if (MOTION) {
       .from('.facts li', { autoAlpha: 0, duration: .7, stagger: .14 }, '<');
 
     // Marquee: speeds up with scroll velocity and follows the scroll direction, then settles.
+    // Phones keep the plain CSS marquee, which runs off the main thread.
+    if (!LITE) {
     const marq = gsap.to('.marquee-track', { xPercent: -50, ease: 'none', duration: 60, repeat: -1 }).totalTime(600);
     let calm;
     ScrollTrigger.create({ trigger: '.marquee', start: 'top bottom', end: 'bottom top', onUpdate: self => {
@@ -373,6 +398,7 @@ if (MOTION) {
       if (calm) calm.kill();
       calm = gsap.delayedCall(.25, () => gsap.to(marq, { timeScale: dir, duration: 1.2, overwrite: true }));
     } });
+    }
 
     splitWords('.open .sec-title, .sch-copy .sec-title, .ex-title, .results .sec-title');
     rise('.open .lead', '.open .lead');
@@ -411,7 +437,7 @@ if (MOTION) {
       .from('.crumbs, .pg-sub, .pg-hero .btn, .pg-divider', { autoAlpha: 0, y: 18, duration: .7, stagger: .1 }, .2)
       .from('.pg-dates li', { autoAlpha: 0, y: 14, scale: .92, duration: .6, ease: 'back.out(1.8)', stagger: .1 }, .6);
     splitChars('.pg-title', .15);
-    gsap.to('.pg-hero-in', { yPercent: 30, opacity: .2, ease: 'none', scrollTrigger: { trigger: '.pg-hero', start: 'top top', end: 'bottom top', scrub: true } });
+    if (!LITE) gsap.to('.pg-hero-in', { yPercent: 30, opacity: .2, ease: 'none', scrollTrigger: { trigger: '.pg-hero', start: 'top top', end: 'bottom top', scrub: true } });
     rise('#evFilters .chip, #evCount', '#evFilters', { stagger: .05 });
   }
 
@@ -426,22 +452,22 @@ if (MOTION) {
     gsap.timeline({ scrollTrigger: enter('.collage', 'top 80%'), onComplete: () => release('.collage img, .scribble') })
       .from('.collage img', { autoAlpha: 0, y: 110, rotation: 0, scale: .8, duration: 1, ease: 'power3.out', stagger: .16 })
       .from('.scribble', { autoAlpha: 0, scale: .5, rotation: -30, duration: .8, ease: 'back.out(1.8)' }, '-=.4');
-    gsap.to('.collage', { yPercent: -6, ease: 'none', scrollTrigger: { trigger: '.collage', start: 'top bottom', end: 'bottom top', scrub: 1 } });
+    if (!LITE) gsap.to('.collage', { yPercent: -6, ease: 'none', scrollTrigger: { trigger: '.collage', start: 'top bottom', end: 'bottom top', scrub: 1 } });
   }
 
   // Cards and rows rise in staggered batches and their icons pop. Home schedule rows sit on artwork frames, so they only fade.
   const onArt = el => !!el.closest('.sch-list');
-  gsap.set('.reveal', { autoAlpha: 0, y: (i, el) => onArt(el) ? 0 : 28 });
+  gsap.set('.reveal', { autoAlpha: 0, y: (i, el) => onArt(el) ? 0 : LITE ? 14 : 28 });
   lock('.reveal');
-  ScrollTrigger.batch('.reveal', { start: 'top 94%', once: true, onEnter: batch => {
-    gsap.to(batch, { autoAlpha: 1, y: 0, duration: .65, stagger: .06, ease: 'power3.out', overwrite: true, onComplete: () => release(batch) });
+  ScrollTrigger.batch('.reveal', { start: LITE ? 'top bottom+=300' : 'top 94%', once: true, onEnter: batch => {
+    gsap.to(batch, { autoAlpha: 1, y: 0, duration: LITE ? .4 : .65, stagger: LITE ? { amount: .15 } : .06, ease: 'power3.out', overwrite: true, onComplete: () => release(batch) });
     const icons = batch.flatMap(el => [...el.querySelectorAll(':scope > i, .sch-day, .tt-date, .xb-ico, .ct-ico')]);
-    if (icons.length) {
+    if (icons.length && !LITE) {
       lock(icons);
       gsap.from(icons, { autoAlpha: 0, scale: .4, rotation: (i, el) => el.matches('.sch-day, .tt-date') ? 0 : -25, duration: .75, ease: 'back.out(2.2)', stagger: .07, delay: .12, onComplete: () => release(icons) });
     }
     const pics = batch.flatMap(el => [...el.querySelectorAll('.sch-thumb img, .tt-pic img, .ev-pic img')]);
-    if (pics.length) { lock(pics); gsap.from(pics, { scale: 1.25, duration: 1.2, ease: 'power3.out', stagger: .08, onComplete: () => release(pics) }); }
+    if (pics.length && !LITE) { lock(pics); gsap.from(pics, { scale: 1.25, duration: 1.2, ease: 'power3.out', stagger: .08, onComplete: () => release(pics) }); }
   } });
 
   addEventListener('load', () => ScrollTrigger.refresh());

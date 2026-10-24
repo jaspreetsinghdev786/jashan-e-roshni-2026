@@ -254,7 +254,10 @@ with sync_playwright() as p:
             pg = c.new_page(); errs = []
             pg.on('pageerror', lambda e: errs.append('pageerror: ' + str(e)))
             pg.on('console', lambda m: errs.append('console: ' + m.text) if m.type == 'error' else None)
+            pg.add_init_script("addEventListener('load', () => { window.__mapAtLoad = !!document.querySelector('.ct-map iframe'); })")
             pg.goto((ROOT / f'{name}.html').as_uri()); pg.wait_for_timeout(700)
+            if name == 'contact':
+                check(f'contact {w}px: heavy Google map does not hold up page load', pg.evaluate('window.__mapAtLoad') is False)
             hard = [e for e in errs if not any(b in e for b in benign)]
             check(f'{name} {w}px: no JS errors', not hard, '; '.join(hard)[:300])
             check(f'{name} {w}px: one h1 and current nav link', pg.locator('h1').count() == 1 and pg.evaluate("document.querySelector('.nav nav a[aria-current=page]').textContent") == label)
@@ -283,7 +286,8 @@ with sync_playwright() as p:
                 if name == 'contact':
                     socials = pg.evaluate("[...document.querySelectorAll('.ct-social a')].map(a=>a.href)")
                     check('contact: department Instagram and Facebook links', any('mrsptu_computational_sciences' in s for s in socials) and any('Computational-Sciences-Department' in s for s in socials), str(socials))
-                    check('contact: map and five questions', pg.locator('.ct-map iframe').count() == 1 and pg.locator('.faq details').count() == 5)
+                    pg.locator('.ct-map').scroll_into_view_if_needed(); pg.wait_for_timeout(800)
+                    check('contact: map loads when scrolled to, plus five questions', pg.locator('.ct-map iframe').count() == 1 and pg.locator('.faq details').count() == 5)
             c.close()
 
     # 12. links from the timetable land on the right event
@@ -291,6 +295,60 @@ with sync_playwright() as p:
     pg.goto((ROOT / 'events.html').as_uri() + '#quiz'); pg.wait_for_timeout(1200)
     top = pg.evaluate("document.getElementById('quiz').getBoundingClientRect().top")
     check('events.html#quiz scrolls to the Quiz rules', 0 <= top < 300, str(top))
+    c.close()
+
+    # 13. phones: light mode for smooth native scrolling and quick images
+    PHONE = dict(viewport={'width': 390, 'height': 844}, device_scale_factor=2, is_mobile=True, has_touch=True)
+    for name in ('index', 'schedule', 'events', 'exhibition', 'contact'):
+        c = browser.new_context(**PHONE); pg = c.new_page()
+        pg.goto((ROOT / f'{name}.html').as_uri()); pg.wait_for_timeout(1200)
+        st = pg.evaluate("""() => {
+          const vis = e => e.offsetParent || getComputedStyle(e).position === 'fixed';
+          const all = [...document.querySelectorAll('body *')].filter(vis);
+          return {
+            lite: document.documentElement.classList.contains('lite'),
+            lenis: !!window.__lenis || document.documentElement.classList.contains('lenis'),
+            embers: getComputedStyle(document.querySelector('#sparks')).display !== 'none',
+            blur: all.filter(e => (getComputedStyle(e).backdropFilter || 'none') !== 'none').map(e => e.className).slice(0, 4),
+            blend: all.filter(e => getComputedStyle(e).mixBlendMode !== 'normal').map(e => e.className || e.tagName).slice(0, 4),
+            loops: document.getAnimations().filter(a => a.effect && a.effect.getTiming().iterations === Infinity && !(a.effect.target && a.effect.target.classList.contains('marquee-track'))).map(a => a.animationName || 'anim').slice(0, 4),
+          };
+        }""")
+        check(f'phone {name}: light mode is on', st['lite'])
+        check(f'phone {name}: native scrolling (no smooth-scroll script)', not st['lenis'])
+        check(f'phone {name}: no ember canvas', not st['embers'])
+        check(f'phone {name}: no backdrop blur while scrolling', not st['blur'], str(st['blur']))
+        check(f'phone {name}: no blend-mode layers', not st['blend'], str(st['blend']))
+        check(f'phone {name}: no endless effects except the marquee', not st['loops'], str(st['loops']))
+        used = pg.evaluate("""() => {
+          const out = new Set();
+          document.querySelectorAll('img').forEach(i => { if (i.offsetParent && i.getAttribute('src')) out.add(i.getAttribute('src')); });
+          document.querySelectorAll('*').forEach(e => {
+            if (!e.offsetParent && e !== document.body) return;
+            for (const pseudo of [null, '::before', '::after'])
+              (getComputedStyle(e, pseudo).backgroundImage.match(/url\\("?([^")]+)"?\\)/g) || []).forEach(u => out.add(u.replace(/^url\\("?|"?\\)$/g, '')));
+          });
+          return [...out].filter(u => /\\.webp/.test(u)).map(u => decodeURIComponent(u.replace(/^.*?assets\\//, 'assets/')));
+        }""")
+        heavy = [u for u in used if (ROOT / u).exists() and (ROOT / u).stat().st_size > 120000]
+        check(f'phone {name}: no image over 120 KB used', not heavy, str(heavy))
+        c.close()
+
+    # 14. phones: content is already shown when it scrolls into view (no section-by-section pop-in)
+    c = browser.new_context(**PHONE); pg = c.new_page()
+    pg.goto((ROOT / 'index.html').as_uri()); pg.wait_for_timeout(1200)
+    for sel in ('.benefits li', '#cards .card', '.rs-cards li'):
+        pg.evaluate(f"(() => {{ const e = document.querySelector('{sel}'); scrollTo({{ top: e.getBoundingClientRect().top + scrollY - innerHeight - 60, behavior: 'instant' }}); }})()")
+        pg.wait_for_timeout(700)
+        op = pg.evaluate(f"getComputedStyle(document.querySelector('{sel}')).opacity")
+        check(f'phone: {sel} is shown before it enters the screen', op == '1', op)
+    c.close()
+
+    # 15. desktop keeps the full effects
+    c = browser.new_context(viewport={'width': 1440, 'height': 900}); pg = c.new_page()
+    pg.goto((ROOT / 'index.html').as_uri()); pg.wait_for_timeout(1200)
+    d = pg.evaluate("({lite: document.documentElement.classList.contains('lite'), lenis: !!window.__lenis, embers: getComputedStyle(document.querySelector('#sparks')).display !== 'none'})")
+    check('desktop: full effects stay on (smooth scroll, embers)', not d['lite'] and d['lenis'] and d['embers'], str(d))
     c.close()
 
     browser.close()
