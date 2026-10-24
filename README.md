@@ -21,13 +21,13 @@ pip install playwright
 python tests/run_tests.py
 ```
 
-## Two deployments
+## Deployments
 
-One codebase, two Vercel sites. `build.js` stamps the department on `<html data-dept="…">`, which removes the department popup and hides the days that department cannot enter.
+One codebase, one Vercel site with two entrances. `build.js` stamps the department on `<html data-dept="…">`, which removes the department popup and hides the days that department cannot enter.
 
-| Site | Build | URL |
-|---|---|---|
-| Computational Sciences (all events) | `node build.js cs` then `vercel --prod` inside `dist/cs` | https://jashan-e-roshni-2026-eight.vercel.app |
-| Other departments (5 Nov only) | `node build.js other` then `vercel --prod` inside `dist/other` | https://jashan-e-roshni-2026-open.vercel.app |
+| Audience | URL |
+|---|---|
+| Computational Sciences (all events) | https://jashan-e-roshni-2026-eight.vercel.app |
+| Other departments (5 Nov only) | https://jashan-e-roshni-2026-eight.vercel.app/open/ |
 
-The root folder (with the popup) still runs as-is for local preview. `dist/` is ignored by git; each `dist/<dept>/.vercel` folder holds that site's project link.
+Deploy: `node build.js all`, then `vercel --prod` inside `dist/all`. The root folder (with the popup) still runs as-is for local preview. `dist/` is ignored by git; `dist/all/.vercel` holds the project link. `node build.js cs` or `other` builds a single-department copy if one is ever needed on its own.
